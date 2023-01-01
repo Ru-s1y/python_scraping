@@ -10,11 +10,11 @@ from user_log import user_log
 # start script
 print('スクリプトを開始します。')
 
-url = os.getenv('SCRAPING_URL') or "https://google.co.jp/"
+url = "https://www.pixiv.net/"
 response = requests.get(url)
 soup = BeautifulSoup(response.text, 'html.parser')
 
-user_log.save(response)
+user_log.save_html(response)
 
 # tag = soup.select(selector=".logo > a > span")[0]
 # print(tag.text)

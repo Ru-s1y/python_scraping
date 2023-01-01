@@ -2,11 +2,34 @@ version: '3'
 
 services:
   python:
-    restart: always
-    build: .
-    working_dir: '/var/docker-python'
-    tty: true
+    build: ./docker/python
     volumes:
-      - ./app:/var/docker-python/app
+      - ./app:/var/app
+    depends_on:
+      - selenium-hub
+    tty: true
     environment:
-      - SCRAPING_URL=${SCRAPING_URL}
+      - SE_SCREEN_WIDTH=${SE_SCREEN_WIDTH}
+      - SE_SCREEN_HEIGHT=${SE_SCREEN_HEIGHT}
+      - SE_SCREEN_DEPTH=${SE_SCREEN_DEPTH}
+      - SE_SCREEN_DPI=${SE_SCREEN_DPI}
+      - HUB_HOST=selenium-hub
+      - BROWSER_NAME=chrome
+
+  selenium:
+    image: selenium/standalone-chrome:4.7.2-20221219
+    shm_size: 2gb
+    depends_on:
+      - selenium-hub
+    environment:
+      - SE_EVENT_BUS_HOST=${SE_EVENT_BUS_HOST}
+      - SE_EVENT_BUS_PUBLISH_PORT=${SE_EVENT_BUS_HOST}
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=${SE_EVENT_BUS_HOST}
+
+  selenium-hub:
+    image: selenium/hub:latest
+    container_name: selenium-hub
+    ports:
+      - "4442:4442"
+      - "4443:4443"
+      - "4444:4444"
